@@ -2,6 +2,7 @@ package com.avaliacao.desafioHyperativa.config;
 
 import com.avaliacao.desafioHyperativa.model.Log;
 import com.avaliacao.desafioHyperativa.repository.LogRepository;
+import com.avaliacao.desafioHyperativa.service.LogService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,13 +25,15 @@ public class LoggingFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
 
+    @Autowired
+    private LogService logService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
         String requestURI = request.getRequestURI();
 
-        // Ignorar logs para o Swagger
         if (requestURI.contains("/swagger-ui/") || requestURI.contains("/v3/api-docs/")) {
             filterChain.doFilter(request, response);
             return;
@@ -40,12 +43,12 @@ public class LoggingFilter extends OncePerRequestFilter {
         MDC.put("requestId", requestId);
 
         long startTime = System.currentTimeMillis();
+        ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
+        ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
         try {
-            ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
-            ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
             filterChain.doFilter(wrappedRequest, wrappedResponse);
-            logRequest(wrappedRequest);
-            logResponse(wrappedResponse);
+            logRequest(wrappedRequest, requestId); // Passa o requestId
+            logResponse(wrappedResponse, requestId, requestURI); // Passa o requestId
             wrappedResponse.copyBodyToResponse();
         } finally {
             long endTime = System.currentTimeMillis();
@@ -54,20 +57,26 @@ public class LoggingFilter extends OncePerRequestFilter {
         }
     }
 
-    private void logRequest(ContentCachingRequestWrapper request) throws IOException {
-        logger.info("Request: {} {} - Query Params: {}", request.getMethod(), request.getRequestURI(), request.getQueryString());
+    private void logRequest(ContentCachingRequestWrapper request, String requestId) throws IOException {
+        String requestURI = request.getRequestURI();
+        String queryString = request.getQueryString();
+        String method = request.getMethod();
+        String requestBody = "";
         byte[] content = request.getContentAsByteArray();
         if (content.length > 0) {
-            String requestBody = new String(content, request.getCharacterEncoding());
-            logger.info("Request Body: {}", requestBody);
+            requestBody = new String(content, request.getCharacterEncoding());
         }
+
+        logService.log("INFO", "Request: " + method + " " + requestURI + " - Query Params: " + queryString, requestBody, queryString, null, requestURI);
     }
 
-    private void logResponse(ContentCachingResponseWrapper response) throws IOException {
+    private void logResponse(ContentCachingResponseWrapper response, String requestId, String requestURI) throws IOException {
+        String responseBody = "";
         byte[] content = response.getContentAsByteArray();
         if (content.length > 0) {
-            String responseBody = new String(content, response.getCharacterEncoding());
-            logger.info("Response Body: {}", responseBody);
+            responseBody = new String(content, response.getCharacterEncoding());
         }
+
+        logService.log("INFO", "Response: " + response.getStatus() + " - URI: " + requestURI, null, null, responseBody,requestURI); // Inclui a rota
     }
 }

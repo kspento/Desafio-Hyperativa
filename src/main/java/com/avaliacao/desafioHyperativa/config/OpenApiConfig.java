@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @OpenAPIDefinition(
-        info = @Info(title = "API de Cartões", version = "1.0", description = "API para cadastro e consulta de números de cartão"),
-        security = @SecurityRequirement(name = "bearerAuth") // Aplica a autenticação JWT em todos os endpoints automaticamente
+        info = @Info(title = "Cards Api", version = "1.0", description = "Card Number Registration and Lookup API"),
+        security = @SecurityRequirement(name = "bearerAuth")
 )
 @SecurityScheme(
         name = "bearerAuth",

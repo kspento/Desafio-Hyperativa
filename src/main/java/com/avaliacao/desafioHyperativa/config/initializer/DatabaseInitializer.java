@@ -16,25 +16,25 @@ public class DatabaseInitializer {
 
     @PostConstruct
     public void initializeDatabase() {
-        criarTabelas();
+        createTables();
         insereDadosIniciais();
     }
 
-    private void criarTabelas() {
+    private void createTables() {
         if (!tableExists("logs")) {
             createLogsTable();
         }
-        if (!tableExists("usuario")) {
-            createUsuarioTable();
+        if (!tableExists("user")) {
+            createUserTable();
         }
         if (!tableExists("role")) {
             createRoleTable();
         }
-        if (!tableExists("usuario_role")) {
-            createUsuarioRoleTable();
+        if (!tableExists("user_role")) {
+            createUserRoleTable();
         }
-        if (!tableExists("cartao")) {
-            createCartaoTable();
+        if (!tableExists("card")) {
+            createCardTable();
         }
     }
 
@@ -61,16 +61,17 @@ public class DatabaseInitializer {
                 "id INT AUTO_INCREMENT PRIMARY KEY," +
                 "timestamp DATETIME," +
                 "level VARCHAR(255)," +
+                "route VARCHAR(255)," +
                 "message TEXT," +
-                "requestBody TEXT," +
-                "urlParams TEXT," +
-                "responseBody TEXT" +
+                "request_body TEXT," +
+                "url_params TEXT," +
+                "response_body TEXT" +
                 ");";
         jdbcTemplate.execute(sql);
     }
 
-    private void createUsuarioTable() {
-        String sql = "CREATE TABLE usuario (" +
+    private void createUserTable() {
+        String sql = "CREATE TABLE user (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
                 "username VARCHAR(255)," +
                 "password VARCHAR(255)," +
@@ -87,23 +88,24 @@ public class DatabaseInitializer {
         jdbcTemplate.execute(sql);
     }
 
-    private void createUsuarioRoleTable() {
-        String sql = "CREATE TABLE usuario_role (" +
-                "usuario_id BIGINT," +
+    private void createUserRoleTable() {
+        String sql = "CREATE TABLE user_role (" +
+                "user_id BIGINT," +
                 "role_id BIGINT," +
-                "PRIMARY KEY (usuario_id, role_id)," +
-                "FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
+                "PRIMARY KEY (user_id, role_id)," +
+                "FOREIGN KEY (user_id) REFERENCES user(id)," +
                 "FOREIGN KEY (role_id) REFERENCES role(id)" +
                 ");";
         jdbcTemplate.execute(sql);
     }
 
-    private void createCartaoTable() {
-        String sql = "CREATE TABLE cartao (" +
+    private void createCardTable() {
+        String sql = "CREATE TABLE card (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
-                "numero VARCHAR(255)," +
-                "usuario_id BIGINT," +
-                "FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
+                "number VARCHAR(255)," +
+                "card_key VARCHAR(36) UNIQUE," +
+                "user_id BIGINT," +
+                "FOREIGN KEY (user_id) REFERENCES user(id)" +
                 ");";
         jdbcTemplate.execute(sql);
     }
@@ -116,14 +118,14 @@ public class DatabaseInitializer {
     private void insertAdminUser() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPassword = passwordEncoder.encode("admin");
-        jdbcTemplate.execute("INSERT INTO usuario (username, password, email) SELECT 'admin', '" + hashedPassword + "', 'admin@example.com' WHERE NOT EXISTS (SELECT 1 FROM usuario WHERE username = 'admin')");
-        jdbcTemplate.execute("INSERT INTO usuario_role (usuario_id, role_id) SELECT u.id, r.id FROM usuario u, role r WHERE u.username = 'admin' AND r.name = 'ADMIN' AND NOT EXISTS (SELECT 1 FROM usuario_role ur WHERE ur.usuario_id = u.id AND ur.role_id = r.id)");
+        jdbcTemplate.execute("INSERT INTO user (username, password, email) SELECT 'admin', '" + hashedPassword + "', 'admin@example.com' WHERE NOT EXISTS (SELECT 1 FROM user WHERE username = 'admin')");
+        jdbcTemplate.execute("INSERT INTO user_role (user_id, role_id) SELECT u.id, r.id FROM user u, role r WHERE u.username = 'admin' AND r.name = 'ADMIN' AND NOT EXISTS (SELECT 1 FROM user_role ur WHERE ur.user_id = u.id AND ur.role_id = r.id)");
     }
 
     private void insertUserUser() {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String hashedPassword = passwordEncoder.encode("user");
-        jdbcTemplate.execute("INSERT INTO usuario (username, password, email) SELECT 'user', '" + hashedPassword + "', 'user@example.com' WHERE NOT EXISTS (SELECT 1 FROM usuario WHERE username = 'user')");
-        jdbcTemplate.execute("INSERT INTO usuario_role (usuario_id, role_id) SELECT u.id, r.id FROM usuario u, role r WHERE u.username = 'user' AND r.name = 'USER' AND NOT EXISTS (SELECT 1 FROM usuario_role ur WHERE ur.usuario_id = u.id AND ur.role_id = r.id)");
+        jdbcTemplate.execute("INSERT INTO user (username, password, email) SELECT 'user', '" + hashedPassword + "', 'user@example.com' WHERE NOT EXISTS (SELECT 1 FROM user WHERE username = 'user')");
+        jdbcTemplate.execute("INSERT INTO user_role (user_id, role_id) SELECT u.id, r.id FROM user u, role r WHERE u.username = 'user' AND r.name = 'USER' AND NOT EXISTS (SELECT 1 FROM user_role ur WHERE ur.user_id = u.id AND ur.role_id = r.id)");
     }
 }

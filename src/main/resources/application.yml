@@ -15,6 +15,9 @@ spring:
     hibernate:
       ddl-auto: none
     database-platform: org.hibernate.dialect.MySQL8Dialect
+encryption:
+  secret-key: "1234567890abcdef"
+  iv: "1234512345123456"
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

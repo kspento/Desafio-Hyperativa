@@ -2,6 +2,7 @@ package com.avaliacao.desafioHyperativa.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +26,15 @@ public class Card {
 
     @Column(name = "card_key", unique = true)
     private String cardKey;
+
+    @Column(name = "holder_name")
+    private String holderName;
+
+    @Column(name = "expiration_date")
+    private LocalDate expirationDate;
+
+    @Column(name = "cvv")
+    private String cvv;
 
     // Getters e setters
     public Long getId() {
@@ -57,5 +67,29 @@ public class Card {
 
     public void setCardKey(UUID key) {
         this.cardKey = key != null ? key.toString() : null;
+    }
+
+    public String getHolderName() {
+        return holderName;
+    }
+
+    public void setHolderName(String holderName) {
+        this.holderName = holderName;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public String getCvv() {
+        return cvv;
+    }
+
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
     }
 }

@@ -1,24 +1,23 @@
 package com.avaliacao.desafioHyperativa.dto;
 
+import java.time.LocalDate;
+
 public class CardCreateDTO {
 
-    private Long id;
     private String number;
+    private String holderName;
+    private LocalDate expirationDate;
+    private String cvv;
 
     public CardCreateDTO() {
     }
 
-    public CardCreateDTO(Long id, String number) {
-        this.id = id;
+    public CardCreateDTO(Long id, String number, String holderName, LocalDate expirationDate, String cvv) {
+
         this.number = number;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.holderName = holderName;
+        this.expirationDate = expirationDate;
+        this.cvv = cvv;
     }
 
     public String getNumber() {
@@ -27,5 +26,29 @@ public class CardCreateDTO {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getHolderName() {
+        return holderName;
+    }
+
+    public void setHolderName(String holderName) {
+        this.holderName = holderName;
+    }
+
+    public LocalDate getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
+
+    public String getCvv() {
+        return cvv;
+    }
+
+    public void setCvv(String cvv) {
+        this.cvv = cvv;
     }
 }

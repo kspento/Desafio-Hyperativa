@@ -5,6 +5,7 @@ import com.avaliacao.desafioHyperativa.dto.CardDTO;
 import com.avaliacao.desafioHyperativa.model.Card;
 import com.avaliacao.desafioHyperativa.service.CardService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,9 +62,9 @@ public class CardsController {
             description = "This endpoint creates a new card for the authenticated user based on the provided card number.")
     @ApiResponse(responseCode = "201", description = "Successfully created the card")
     @PostMapping
-    public HttpStatus createCard(@RequestBody String numeroCartao) {
+    public HttpStatus createCard(@RequestBody CardCreateDTO card) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        cardService.registerCard(numeroCartao, authentication.getName());
+        cardService.registerCard(card, authentication.getName());
         return HttpStatus.CREATED;
     }
 
@@ -85,7 +90,7 @@ public class CardsController {
     @PutMapping
     public HttpStatus update(@RequestBody CardDTO cardCreateDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CardDTO card = cardService.updateCard(cardCreateDTO, authentication.getName());
+        cardService.updateCard(cardCreateDTO, authentication.getName());
 
         return HttpStatus.OK;
     }
@@ -103,5 +108,14 @@ public class CardsController {
             return HttpStatus.NOT_FOUND;
         }
         return HttpStatus.OK;
+    }
+    @Operation(summary = "Upload a TXT file and register cards" )
+    @PostMapping(value = "/upload", consumes = "multipart/form-data")
+    public ResponseEntity<List<UUID>> registerCardsFromTxt(
+            @RequestParam("file") MultipartFile file) throws IOException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        List<UUID> cardKeys = cardService.registerCardsFromTxt(file, authentication.getName());
+        return ResponseEntity.ok(cardKeys);
     }
 }

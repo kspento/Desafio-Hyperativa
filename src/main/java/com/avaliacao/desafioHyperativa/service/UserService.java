@@ -10,6 +10,7 @@ import com.avaliacao.desafioHyperativa.model.enums.RoleType;
 import com.avaliacao.desafioHyperativa.repository.RoleRepository;
 import com.avaliacao.desafioHyperativa.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,7 +35,10 @@ public class UserService {
     public void registerUser(CreateUserDTO user) {
 
         var userDb = userMapper.createUserDTOtoEntity(user);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+        var pwd = passwordEncoder.encode(userDb.getPassword());
+        userDb.setPassword(pwd);
         var registeredUser = userRepository.findByUsername(user.getUsername());
 
         if (registeredUser != null)

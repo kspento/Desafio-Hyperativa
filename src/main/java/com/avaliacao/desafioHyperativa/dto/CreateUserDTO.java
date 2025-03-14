@@ -47,4 +47,13 @@ public class CreateUserDTO {
     public void setRoles(Set<RoleType> roles) {
         this.roles = roles;
     }
+
+    public CreateUserDTO(){}
+
+    public CreateUserDTO(String username, String password, String email, Set<RoleType> roles) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.roles = roles;
+    }
 }

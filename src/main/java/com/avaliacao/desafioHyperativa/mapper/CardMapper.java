@@ -15,9 +15,10 @@ public class CardMapper {
         }
 
         CardCreateDTO cardCreateDTO = new CardCreateDTO();
-        cardCreateDTO.setId(card.getId());
         cardCreateDTO.setNumber(card.getNumber());
-        // Não mapear o usuarioId para o dto.
+        cardCreateDTO.setHolderName(card.getHolderName());
+        cardCreateDTO.setExpirationDate(card.getExpirationDate());
+        cardCreateDTO.setCvv(card.getCvv());
         return cardCreateDTO;
     }
 
@@ -26,11 +27,13 @@ public class CardMapper {
             return null;
         }
 
-        CardDTO cardCreateDTO = new CardDTO();
-        cardCreateDTO.setKey(card.getCardKey());
-        cardCreateDTO.setNumber(card.getNumber());
-        // Não mapear o usuarioId para o dto.
-        return cardCreateDTO;
+        CardDTO cardDTO = new CardDTO();
+        cardDTO.setKey(card.getCardKey());
+        cardDTO.setNumber(card.getNumber());
+        cardDTO.setHolderName(card.getHolderName());
+        cardDTO.setExpirationDate(card.getExpirationDate());
+        cardDTO.setCvv(card.getCvv());
+        return cardDTO;
     }
 
     public Card CardCreateDTOToEntity(CardCreateDTO cardCreateDTO) {
@@ -39,9 +42,10 @@ public class CardMapper {
         }
 
         Card card = new Card();
-        card.setId(cardCreateDTO.getId());
         card.setNumber(cardCreateDTO.getNumber());
-        // O usuarioId será setado na service.
+        card.setHolderName(cardCreateDTO.getHolderName());
+        card.setExpirationDate(cardCreateDTO.getExpirationDate());
+        card.setCvv(cardCreateDTO.getCvv());
         return card;
     }
 }

@@ -102,9 +102,12 @@ public class DatabaseInitializer {
     private void createCardTable() {
         String sql = "CREATE TABLE card (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
-                "number VARCHAR(255)," +
-                "card_key VARCHAR(36) UNIQUE," +
+                "number VARCHAR(512)," +
+                "card_key VARCHAR(128) UNIQUE," +
                 "user_id BIGINT," +
+                "holder_name VARCHAR(512)," +
+                "expiration_date DATE," +
+                "cvv VARCHAR(128)," +
                 "FOREIGN KEY (user_id) REFERENCES user(id)" +
                 ");";
         jdbcTemplate.execute(sql);

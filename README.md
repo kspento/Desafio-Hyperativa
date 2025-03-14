@@ -1,3 +1,13 @@
+## Configuração do Ambiente
+
+Este projeto foi desenvolvido utilizando as seguintes tecnologias e versões:
+
+* **Java:** 21
+* **Maven:** \[Versão do Maven utilizada]
+* **Spring Boot:** 3.4.3
+
+Certifique-se de que você tenha essas versões (ou versões compatíveis) instaladas em seu ambiente de desenvolvimento.
+
 ## Configuração do Banco de Dados MySQL com Docker
 
 Para configurar o banco de dados MySQL usando Docker, siga estas etapas:
@@ -32,3 +42,16 @@ Para configurar o banco de dados MySQL usando Docker, siga estas etapas:
     * `mysql -u root -p`: Inicia o cliente MySQL e solicita a senha do usuário root.
 
     Quando solicitado, digite a senha do usuário root ("password").
+
+## Configuração do application.yml
+
+As configurações de conexão com o banco de dados estão no arquivo `src/main/resources/application.yml`. Caso você esteja utilizando o Docker com as configurações padrão, não é necessário fazer alterações.
+
+Caso contrário, ajuste as seguintes propriedades no `application.yml` para corresponder às suas configurações de banco de dados:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://<host>:<port>/<database>
+    username: <username>
+    password: <password>

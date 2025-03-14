@@ -2,10 +2,9 @@ package com.avaliacao.desafioHyperativa.controller;
 
 import com.avaliacao.desafioHyperativa.model.Usuario;
 import com.avaliacao.desafioHyperativa.service.UsuarioService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -21,5 +20,11 @@ public class UsuarioController {
     @PostMapping
     public Usuario cadastrarUsuario(@RequestBody Usuario usuario) {
         return usuarioService.cadastrarUsuario(usuario);
+    }
+
+    @GetMapping
+    public List<Usuario> ObterTodos()
+    {
+        return usuarioService.obterTodos();
     }
 }

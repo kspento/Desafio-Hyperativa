@@ -1,12 +1,13 @@
 package com.avaliacao.desafioHyperativa.service;
 
 import com.avaliacao.desafioHyperativa.dto.CartaoDTO;
-import com.avaliacao.desafioHyperativa.dto.CartaoRequestDto;
 import com.avaliacao.desafioHyperativa.mapper.CartaoMapper;
 import com.avaliacao.desafioHyperativa.model.Cartao;
 import com.avaliacao.desafioHyperativa.model.Usuario;
 import com.avaliacao.desafioHyperativa.repository.CartaoRepository;
 import com.avaliacao.desafioHyperativa.repository.UsuarioRepository;
+import com.sun.jdi.request.DuplicateRequestException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,10 +39,17 @@ public class CartaoService {
                 .collect(Collectors.toList());
     }
 
-    public CartaoDTO cadastrarCartao(CartaoDTO cartaoDTO, String username) {
+    public CartaoDTO cadastrarCartao(String numeroCartao, String username) {
         Usuario usuario = usuarioRepository.findByUsername(username);
-        Cartao cartao = cartaoMapper.toEntity(cartaoDTO);
+        Cartao cartao = new Cartao();
+        cartao.setNumero(numeroCartao);
         cartao.setUsuarioId(usuario.getId());
+        var cartaoExiste = cartaoRepository.findByNumero(numeroCartao);
+
+        if(cartaoExiste != null){
+            throw new DuplicateRequestException("Número de cartão em uso");
+        }
+
         return cartaoMapper.toDTO(cartaoRepository.save(cartao));
     }
 

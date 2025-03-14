@@ -40,9 +40,9 @@ public class CartaoController {
     }
 
     @PostMapping
-    public ResponseEntity<CartaoDTO> cadastrarCartao(@RequestBody CartaoDTO cartaoDTO) {
+    public ResponseEntity<CartaoDTO> cadastrarCartao(@RequestBody String numeroCartao) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CartaoDTO cartao = cartaoService.cadastrarCartao(cartaoDTO, authentication.getName());
+        CartaoDTO cartao = cartaoService.cadastrarCartao(numeroCartao, authentication.getName());
         return ResponseEntity.ok(cartao);
     }
 

@@ -10,19 +10,31 @@ import lombok.ToString;
 import java.util.Set;
 
 @Entity
-@Data
-@ToString(exclude = "usuarios") // Exclui o campo 'usuarios'
-@EqualsAndHashCode(exclude = "usuarios") // Exclui o campo 'usuarios'
+@Table(name = "role")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "name")
     private RoleType name;
 
-    // Se Usuario tiver um relacionamento bidirecional:
-    @ManyToMany(mappedBy = "roles")
-    private Set<Usuario> usuarios;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public RoleType getName() {
+        return name;
+    }
+
+    public void setName(RoleType name) {
+        this.name = name;
+    }
 }

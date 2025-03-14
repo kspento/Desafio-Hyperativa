@@ -1,19 +1,20 @@
 package com.avaliacao.desafioHyperativa.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "cartao")
 public class Cartao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "numero")
     private String numero;
 
+    @Column(name = "usuario_id")
     private long usuarioId;
 
     // Getters e setters

@@ -40,6 +40,16 @@ public class CartaoService {
     }
 
     public CartaoDTO cadastrarCartao(String numeroCartao, String username) {
+
+        numeroCartao =  numeroCartao.replaceAll("\"", "");
+
+        var cartaoValido = validarNumeroCartao(numeroCartao);
+
+        if (!cartaoValido)
+        {
+            throw new IllegalArgumentException("Número de cartão inválido");
+        }
+
         Usuario usuario = usuarioRepository.findByUsername(username);
         Cartao cartao = new Cartao();
         cartao.setNumero(numeroCartao);
@@ -83,5 +93,19 @@ public class CartaoService {
                     return true;
                 })
                 .orElse(false);
+    }
+
+    private static boolean validarNumeroCartao(String numeroCartao) {
+        // 1. Verifica se o número do cartão contém apenas dígitos numéricos
+        if (!numeroCartao.matches("\\d+")) {
+            return false;
+        }
+
+        // 2. Verifica se o número do cartão tem um tamanho válido
+        if (numeroCartao.length() != 16) {
+            return false;
+        }
+
+        return true;
     }
 }
